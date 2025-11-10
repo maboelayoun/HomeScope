@@ -18,5 +18,6 @@ namespace HomeScope.Domain.Entities
 
         public ICollection<Inquiry> Inquiries { get; set; }
         public ICollection<Favorite> Favorites { get; set; }
+        public ICollection<Property> Properties { get; set; }
     }
 }
