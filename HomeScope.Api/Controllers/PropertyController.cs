@@ -55,6 +55,23 @@ namespace HomeScope.Api.Controllers
             return Ok(imageUrls);
         }
 
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdatePropertyRequest request)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var success = await _propertyService.UpdatePropertyAsync(id, request, userId);
+            return success ? Ok("Property updated") : Forbid();
+        }
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var success = await _propertyService.DeletePropertyAsync(id, userId);
+            return success ? Ok("Property deleted") : Forbid();
+        }
+
     }
 
 }
