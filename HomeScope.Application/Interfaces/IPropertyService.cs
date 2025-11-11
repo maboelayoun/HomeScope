@@ -11,5 +11,8 @@ namespace HomeScope.Application.Interfaces
     {
         Task<int> CreatePropertyAsync(CreatePropertyRequest request, int userId);
         Task<List<PropertyResponse>> GetAllPropertiesAsync();
+        Task<bool> UpdatePropertyAsync(int propertyId, UpdatePropertyRequest request, int userId);
+        Task<bool> DeletePropertyAsync(int propertyId, int userId);
+
     }
 }

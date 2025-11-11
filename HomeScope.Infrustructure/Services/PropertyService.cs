@@ -56,6 +56,50 @@ namespace HomeScope.Infrustructure.Services
                 })
                 .ToListAsync();
         }
+
+        public async Task<bool> UpdatePropertyAsync(int propertyId, UpdatePropertyRequest request, int userId)
+        {
+            var property = await _context.Properties
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.Id == propertyId);
+
+            if (property == null || property.UserId != userId)
+                return false;
+
+            property.Title = request.Title;
+            property.Description = request.Description;
+            property.Location = request.Location;
+            property.Price = request.Price;
+            property.Bedrooms = request.Bedrooms;
+            property.Bathrooms = request.Bathrooms;
+            property.Type = request.Type;
+
+            // Replace images
+            _context.PropertyImages.RemoveRange(property.Images);
+            property.Images = request.ImageUrls?.Select(url => new PropertyImage
+            {
+                ImageUrl = url,
+                PropertyId = propertyId
+            }).ToList();
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> DeletePropertyAsync(int propertyId, int userId)
+        {
+            var property = await _context.Properties
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.Id == propertyId);
+
+            if (property == null || property.UserId != userId)
+                return false;
+
+            _context.PropertyImages.RemoveRange(property.Images);
+            _context.Properties.Remove(property);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 
 }
