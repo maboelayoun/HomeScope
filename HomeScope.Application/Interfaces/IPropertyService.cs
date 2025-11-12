@@ -13,6 +13,10 @@ namespace HomeScope.Application.Interfaces
         Task<List<PropertyResponse>> GetAllPropertiesAsync();
         Task<bool> UpdatePropertyAsync(int propertyId, UpdatePropertyRequest request, int userId);
         Task<bool> DeletePropertyAsync(int propertyId, int userId);
+        Task<bool> AddToFavoritesAsync(int propertyId, int userId);
+        Task<List<PropertyDto>> GetFavoritesAsync(int userId);
+
+
 
     }
 }
