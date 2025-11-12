@@ -43,6 +43,19 @@ namespace HomeScope.Infrustructure.Persistence
                 .WithMany(p => p.Images)
                 .HasForeignKey(pi => pi.PropertyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Inquiry>()
+    .HasOne(i => i.User)
+    .WithMany(u => u.Inquiries)
+    .HasForeignKey(i => i.UserId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Inquiry>()
+                .HasOne(i => i.Property)
+                .WithMany(p => p.Inquiries)
+                .HasForeignKey(i => i.PropertyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Inquiry> Inquiries { get; set; }

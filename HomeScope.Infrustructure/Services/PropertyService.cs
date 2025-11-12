@@ -135,6 +135,19 @@ namespace HomeScope.Infrustructure.Services
             return favorites;
         }
 
+        public async Task<bool> RemoveFromFavoritesAsync(int propertyId, int userId)
+        {
+            var favorite = await _context.Favorites
+                .FirstOrDefaultAsync(fp => fp.PropertyId == propertyId && fp.UserId == userId);
+
+            if (favorite == null) return false;
+
+            _context.Favorites.Remove(favorite);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
     }
 
 }

@@ -71,6 +71,38 @@ namespace HomeScope.Api.Controllers
             var success = await _propertyService.DeletePropertyAsync(id, userId);
             return success ? Ok("Property deleted") : Forbid();
         }
+        [Authorize]
+        [HttpPost("favorite/{propertyId}")]
+        public async Task<IActionResult> AddToFavorites(int propertyId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var success = await _propertyService.AddToFavoritesAsync(propertyId, userId);
+
+            if (!success) return BadRequest("Already favorited.");
+            return Ok("Added to favorites.");
+        }
+
+        [Authorize]
+        [HttpGet("favorites")]
+        public async Task<IActionResult> GetFavorites()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var favorites = await _propertyService.GetFavoritesAsync(userId);
+            return Ok(favorites);
+        }
+
+
+        [Authorize]
+        [HttpDelete("favorite/{propertyId}")]
+        public async Task<IActionResult> RemoveFromFavorites(int propertyId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var success = await _propertyService.RemoveFromFavoritesAsync(propertyId, userId);
+
+            if (!success) return NotFound("Favorite not found.");
+            return Ok("Removed from favorites.");
+        }
+
 
     }
 
