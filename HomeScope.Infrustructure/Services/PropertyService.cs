@@ -100,6 +100,41 @@ namespace HomeScope.Infrustructure.Services
             return true;
         }
 
+        public async Task<bool> AddToFavoritesAsync(int propertyId, int userId)
+        {
+            var exists = await _context.Favorites
+                .AnyAsync(fp => fp.PropertyId == propertyId && fp.UserId == userId);
+
+            if (exists) return false;
+
+            var favorite = new Favorite
+            {
+                PropertyId = propertyId,
+                UserId = userId
+            };
+
+            _context.Favorites.Add(favorite);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<PropertyDto>> GetFavoritesAsync(int userId)
+        {
+            var favorites = await _context.Favorites
+                .Where(fp => fp.UserId == userId)
+                .Include(fp => fp.Property)
+                .Select(fp => new PropertyDto
+                {
+                    Id = fp.Property.Id,
+                    Title = fp.Property.Title,
+                    Price = fp.Property.Price,
+                    Location = fp.Property.Location
+                })
+                .ToListAsync();
+
+            return favorites;
+        }
+
     }
 
 }
