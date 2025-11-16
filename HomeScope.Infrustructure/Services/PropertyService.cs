@@ -135,6 +135,87 @@ namespace HomeScope.Infrustructure.Services
             return favorites;
         }
 
+        public async Task<bool> RemoveFromFavoritesAsync(int propertyId, int userId)
+        {
+            var favorite = await _context.Favorites
+                .FirstOrDefaultAsync(fp => fp.PropertyId == propertyId && fp.UserId == userId);
+
+            if (favorite == null) return false;
+
+            _context.Favorites.Remove(favorite);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<PropertyDto>> GetFilteredPropertiesAsync(PropertyFilterDto filter)
+        {
+            var query = _context.Properties
+                .Include(p => p.Images)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter.Location))
+                query = query.Where(p => p.Location.Contains(filter.Location));
+
+            if (filter.PriceMin.HasValue)
+                query = query.Where(p => p.Price >= filter.PriceMin.Value);
+
+            if (filter.PriceMax.HasValue)
+                query = query.Where(p => p.Price <= filter.PriceMax.Value);
+
+            if (!string.IsNullOrEmpty(filter.Type))
+                query = query.Where(p => p.Type == filter.Type);
+
+            if (filter.Bedrooms.HasValue)
+                query = query.Where(p => p.Bedrooms == filter.Bedrooms.Value);
+
+            var properties = await query
+                .Select(p => new PropertyDto
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Location = p.Location,
+                    CreatedAt = p.CreatedAt,
+                    ImageUrls = p.Images.Select(img => img.ImageUrl).ToList()
+                })
+                .ToListAsync();
+
+            return properties;
+        }
+        public async Task<List<PropertyDto>> GetUserPropertiesAsync(int userId)
+        {
+            var properties = await _context.Properties
+                .Where(p => p.UserId == userId)
+                .Include(p => p.Images)
+                .Select(p => new PropertyDto
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Location = p.Location,
+                    CreatedAt = p.CreatedAt,
+                    ImageUrls = p.Images.Select(img => img.ImageUrl).ToList()
+                })
+                .ToListAsync();
+
+            return properties;
+        }
+        public async Task<bool> DeleteUserPropertyAsync(int propertyId, int userId)
+        {
+            var property = await _context.Properties
+                .FirstOrDefaultAsync(p => p.Id == propertyId && p.UserId == userId);
+
+            if (property == null) return false;
+
+            _context.Properties.Remove(property);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
+
     }
 
 }

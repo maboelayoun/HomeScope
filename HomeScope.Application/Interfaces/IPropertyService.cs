@@ -15,6 +15,13 @@ namespace HomeScope.Application.Interfaces
         Task<bool> DeletePropertyAsync(int propertyId, int userId);
         Task<bool> AddToFavoritesAsync(int propertyId, int userId);
         Task<List<PropertyDto>> GetFavoritesAsync(int userId);
+        Task<bool> RemoveFromFavoritesAsync(int propertyId, int userId);
+        Task<List<PropertyDto>> GetFilteredPropertiesAsync(PropertyFilterDto filter);
+        Task<List<PropertyDto>> GetUserPropertiesAsync(int userId);
+        Task<bool> DeleteUserPropertyAsync(int propertyId, int userId);
+
+
+
 
 
 

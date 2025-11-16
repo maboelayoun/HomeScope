@@ -22,6 +22,8 @@ namespace HomeScope.Domain.Entities
         public User User { get; set; }
 
         public ICollection<PropertyImage> Images { get; set; }
+        public ICollection<Inquiry> Inquiries { get; set; }
+
     }
 
 }

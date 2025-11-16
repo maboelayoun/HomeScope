@@ -71,6 +71,64 @@ namespace HomeScope.Api.Controllers
             var success = await _propertyService.DeletePropertyAsync(id, userId);
             return success ? Ok("Property deleted") : Forbid();
         }
+        [Authorize]
+        [HttpPost("favorite/{propertyId}")]
+        public async Task<IActionResult> AddToFavorites(int propertyId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var success = await _propertyService.AddToFavoritesAsync(propertyId, userId);
+
+            if (!success) return BadRequest("Already favorited.");
+            return Ok("Added to favorites.");
+        }
+
+        [Authorize]
+        [HttpGet("favorites")]
+        public async Task<IActionResult> GetFavorites()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var favorites = await _propertyService.GetFavoritesAsync(userId);
+            return Ok(favorites);
+        }
+
+
+        [Authorize]
+        [HttpDelete("favorite/{propertyId}")]
+        public async Task<IActionResult> RemoveFromFavorites(int propertyId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var success = await _propertyService.RemoveFromFavoritesAsync(propertyId, userId);
+
+            if (!success) return NotFound("Favorite not found.");
+            return Ok("Removed from favorites.");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFilteredProperties([FromQuery] PropertyFilterDto filter)
+        {
+            var properties = await _propertyService.GetFilteredPropertiesAsync(filter);
+            return Ok(properties);
+        }
+        [Authorize]
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyProperties()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var properties = await _propertyService.GetUserPropertiesAsync(userId);
+            return Ok(properties);
+        }
+        [Authorize]
+        [HttpDelete("my/{propertyId}")]
+        public async Task<IActionResult> DeleteMyProperty(int propertyId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var success = await _propertyService.DeleteUserPropertyAsync(propertyId, userId);
+
+            if (!success) return NotFound("Property not found or not owned by user.");
+            return Ok("Property deleted.");
+        }
+
+
 
     }
 
