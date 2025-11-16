@@ -103,6 +103,32 @@ namespace HomeScope.Api.Controllers
             return Ok("Removed from favorites.");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetFilteredProperties([FromQuery] PropertyFilterDto filter)
+        {
+            var properties = await _propertyService.GetFilteredPropertiesAsync(filter);
+            return Ok(properties);
+        }
+        [Authorize]
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyProperties()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var properties = await _propertyService.GetUserPropertiesAsync(userId);
+            return Ok(properties);
+        }
+        [Authorize]
+        [HttpDelete("my/{propertyId}")]
+        public async Task<IActionResult> DeleteMyProperty(int propertyId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var success = await _propertyService.DeleteUserPropertyAsync(propertyId, userId);
+
+            if (!success) return NotFound("Property not found or not owned by user.");
+            return Ok("Property deleted.");
+        }
+
+
 
     }
 

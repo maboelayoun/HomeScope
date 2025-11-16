@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeScope.Application.DTOs.FavoriteProperty
+namespace HomeScope.Application.DTOs
 {
-    public class AddFavoriteDto
+    internal class AddFavoriteDto
     {
-        public int PropertyId { get; set; }
     }
-
 }
