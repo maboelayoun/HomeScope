@@ -1,5 +1,3 @@
-"use client";
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Member, Expense, Balance, Settlement, ExpenseCategory, Home } from "./types";
