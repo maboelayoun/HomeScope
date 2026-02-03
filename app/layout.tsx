@@ -1,25 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/lib/auth-context";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-});
-
 export const metadata: Metadata = {
-  title: "HomeScope - Find Your Perfect Home",
-  description: "Discover your dream property with HomeScope. Browse apartments, villas, and houses for sale or rent.",
+  title: "SplitWise Home - Share Expenses with Roommates",
+  description: "Track and split household expenses easily. Keep track of who paid what and settle up at the end of each month.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#b87333",
+  themeColor: "#10b981",
 };
 
 export default function RootLayout({
@@ -29,8 +23,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        {children}
       </body>
     </html>
   );

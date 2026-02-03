@@ -1,17 +1,15 @@
-import { Header } from "@/components/header";
-import { Hero } from "@/components/hero";
-import { PropertyList } from "@/components/property-list";
-import { Footer } from "@/components/footer";
+"use client";
+
+import { useExpenseStore } from "@/lib/store";
+import { LandingPage } from "@/components/landing-page";
+import { Dashboard } from "@/components/dashboard";
 
 export default function HomePage() {
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      <main className="flex-1">
-        <Hero />
-        <PropertyList />
-      </main>
-      <Footer />
-    </div>
-  );
+  const home = useExpenseStore((state) => state.home);
+
+  if (!home) {
+    return <LandingPage />;
+  }
+
+  return <Dashboard />;
 }
